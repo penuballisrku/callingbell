@@ -1,0 +1,6 @@
+@CallingBell.Api_HostAddress = http://localhost:5152
+
+GET {{CallingBell.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
