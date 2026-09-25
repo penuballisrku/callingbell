@@ -18,4 +18,6 @@ public interface IPlatformRepository
     Task<IReadOnlyList<AdvertisementDto>> GetActiveAdvertisementsAsync(long? categoryId, long? cityId, CancellationToken ct);
     Task<long> CreateAdvertisementAsync(long userId, AdvertisementRequest request, CancellationToken ct);
     Task TrackAdvertisementAsync(long advertisementId, bool click, CancellationToken ct);
+    Task<AdminStatsDto> GetAdminStatsAsync(CancellationToken ct);
+    Task<BusinessOwnerStatsDto> GetBusinessOwnerStatsAsync(long userId, CancellationToken ct);
 }
