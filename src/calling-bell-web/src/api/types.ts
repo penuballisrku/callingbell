@@ -53,6 +53,20 @@ export type HomePage = {
   sections: HomeSection[]
 }
 
+export type DashboardHero = {
+  title: string
+  subtitle: string
+  backgroundImageUrl: string | null
+}
+
+export type Dashboard = {
+  appName: string
+  tagline: string
+  hero: DashboardHero
+  categories: Category[]
+  sections: HomeSection[]
+}
+
 export type Category = {
   categoryId: number
   name: string
