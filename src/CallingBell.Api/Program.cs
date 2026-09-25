@@ -24,6 +24,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<ICallingBellRepository, CallingBellRepository>();
 builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
@@ -34,6 +35,10 @@ builder.Services.AddCors(options =>
         if (allowedOrigins.Length > 0)
         {
             policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
+        }
+        else
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         }
     });
 });
