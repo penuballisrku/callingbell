@@ -134,17 +134,15 @@ public sealed class PlatformRepository(ISqlConnectionFactory factory) : IPlatfor
     {
         const string sql="SELECT (SELECT COUNT_BIG(1) FROM dbo.Users),(SELECT COUNT_BIG(1) FROM dbo.Businesses),(SELECT COUNT_BIG(1) FROM dbo.Leads),(SELECT COUNT_BIG(1) FROM dbo.Bookings),(SELECT COUNT_BIG(1) FROM dbo.Enquiries),(SELECT COUNT_BIG(1) FROM dbo.Advertisements);";
         await using var db=factory.CreateConnection();
-        using var row=await db.QueryMultipleAsync(new CommandDefinition(sql,cancellationToken:ct));
-        var values=await row.ReadSingleAsync<long[]>();
-        return new AdminStatsDto(values[0],values[1],values[2],values[3],values[4],values[5]);
+        var row=await db.QuerySingleAsync(new CommandDefinition(sql,cancellationToken:ct));
+        return new AdminStatsDto((long)row.Users,(long)row.Businesses,(long)row.Leads,(long)row.Bookings,(long)row.Enquiries,(long)row.Advertisements);
     }
 
     public async Task<BusinessOwnerStatsDto> GetBusinessOwnerStatsAsync(long userId,CancellationToken ct)
     {
         const string sql="SELECT (SELECT COUNT_BIG(1) FROM dbo.Businesses b INNER JOIN dbo.Users u ON u.UserId=@UserId WHERE b.OwnerName=u.Name),(SELECT COUNT_BIG(1) FROM dbo.Leads l INNER JOIN dbo.Businesses b ON b.BusinessId=l.BusinessId INNER JOIN dbo.Users u ON u.UserId=@UserId WHERE b.OwnerName=u.Name),(SELECT COUNT_BIG(1) FROM dbo.Bookings bk INNER JOIN dbo.Businesses b ON b.BusinessId=bk.BusinessId INNER JOIN dbo.Users u ON u.UserId=@UserId WHERE b.OwnerName=u.Name),(SELECT COUNT_BIG(1) FROM dbo.Enquiries e INNER JOIN dbo.Businesses b ON b.BusinessId=e.BusinessId INNER JOIN dbo.Users u ON u.UserId=@UserId WHERE b.OwnerName=u.Name);";
         await using var db=factory.CreateConnection();
-        using var row=await db.QueryMultipleAsync(new CommandDefinition(sql,new{UserId=userId},cancellationToken:ct));
-        var values=await row.ReadSingleAsync<long[]>();
-        return new BusinessOwnerStatsDto(values[0],values[1],values[2],values[3]);
+        var row=await db.QuerySingleAsync(new CommandDefinition(sql,new{UserId=userId},cancellationToken:ct));
+        return new BusinessOwnerStatsDto((long)row.Businesses,(long)row.Leads,(long)row.Bookings,(long)row.Enquiries);
     }
 }
