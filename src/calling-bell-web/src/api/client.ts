@@ -22,6 +22,15 @@ export async function request<T>(path: string, init?: RequestInit): Promise<{ da
       headers: {
         Accept: 'application/json',
         ...init?.headers,
+        ...(() => {
+          try {
+            const raw = localStorage.getItem('calling-bell-auth')
+            const token = raw ? (JSON.parse(raw) as { accessToken?: string }).accessToken : undefined
+            return token ? { Authorization: `Bearer ${token}` } : {}
+          } catch {
+            return {}
+          }
+        })(),
       },
     })
   } catch {
