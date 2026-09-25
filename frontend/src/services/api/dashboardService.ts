@@ -1,0 +1,1 @@
+import{apiClient}from'./apiClient';export async function getDashboard(){const r=await apiClient.get('/dashboard');if(!r.data.success)throw new Error(r.data.message);return r.data.data;}
