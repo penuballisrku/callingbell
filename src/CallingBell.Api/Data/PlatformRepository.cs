@@ -8,7 +8,7 @@ public sealed class PlatformRepository(ISqlConnectionFactory factory) : IPlatfor
     public async Task<(long UserId, string Name, string Email, string Role, string PasswordHash)?> FindUserByEmailAsync(string email, CancellationToken ct)
     {
         const string sql = """
-            SELECT TOP (1) u.UserId, u.Name, u.Email, r.Name AS Role, u.PasswordHash
+            SELECT TOP (1) u.UserId, u.Name, u.Email, COALESCE(r.Name,'Customer') AS Role, u.PasswordHash
             FROM dbo.Users u
             LEFT JOIN dbo.UserRoles ur ON ur.UserId = u.UserId
             LEFT JOIN dbo.Roles r ON r.RoleId = ur.RoleId
@@ -26,6 +26,8 @@ public sealed class PlatformRepository(ISqlConnectionFactory factory) : IPlatfor
             INSERT dbo.Users(Name, Email, PasswordHash, IsActive, CreatedDate, UpdatedDate)
             OUTPUT INSERTED.UserId
             VALUES(@Name,@Email,@PasswordHash,1,SYSUTCDATETIME(),SYSUTCDATETIME());
+            DECLARE @UserId BIGINT = SCOPE_IDENTITY();
+            INSERT dbo.UserRoles(UserId,RoleId) SELECT @UserId,RoleId FROM dbo.Roles WHERE Name='Customer';
             COMMIT;
             """;
         await using var db = factory.CreateConnection();
