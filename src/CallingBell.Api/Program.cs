@@ -28,6 +28,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PortalService>();
 builder.Services.AddSingleton<IFileStorageService, AzureBlobFileStorageService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
